@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    />
+    <title>MimiLab - 耳コピアプリ</title>
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <h1>MimiLab</h1>
+        <p class="subtitle">AI 音楽キー・音階検出</p>
+      </header>
+
+      <main class="main">
+        <!-- Input Section -->
+        <section class="input-section">
+          <div class="input-group">
+            <label for="url-input">動画/音声URL</label>
+            <div class="url-row">
+              <input
+                type="text"
+                id="url-input"
+                placeholder="YouTubeなどのURLを入力..."
+              />
+              <button id="analyze-url-btn" class="btn btn-primary">
+                URL解析
+              </button>
+            </div>
+          </div>
+
+          <div class="divider"><span>または</span></div>
+
+          <div class="input-group">
+            <button id="select-file-btn" class="btn btn-secondary btn-full">
+              ファイルを選択（MP3, WAV, FLAC, etc.）
+            </button>
+            <p id="selected-file" class="file-info"></p>
+          </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <section id="loading" class="loading hidden">
+          <div class="spinner"></div>
+          <p>音声を解析中...</p>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="results hidden">
+          <div class="result-cards">
+            <div class="card card-key">
+              <h2>キー</h2>
+              <div class="card-value" id="result-key">-</div>
+              <div class="card-sub" id="result-key-ja">-</div>
+            </div>
+
+            <div class="card card-scale">
+              <h2>スケール</h2>
+              <div class="card-value" id="result-scale">-</div>
+              <div class="card-sub" id="result-scale-ja">-</div>
+            </div>
+
+            <div class="card card-confidence">
+              <h2>信頼度</h2>
+              <div class="card-value" id="result-confidence">-</div>
+              <div class="confidence-bar">
+                <div class="confidence-fill" id="confidence-fill"></div>
+              </div>
+            </div>
+
+            <div class="card card-bpm">
+              <h2>BPM</h2>
+              <div class="card-value" id="result-bpm">-</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3>スケール構成音</h3>
+            <div id="scale-notes" class="scale-notes"></div>
+          </div>
+
+          <div class="detail-section">
+            <h3>ダイアトニックコード</h3>
+            <div id="chords-in-key" class="chords-list"></div>
+          </div>
+        </section>
+
+        <!-- Error Section -->
+        <section id="error" class="error hidden">
+          <p id="error-message"></p>
+        </section>
+      </main>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
