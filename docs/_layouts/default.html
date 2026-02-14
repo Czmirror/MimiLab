@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} — MimiLab</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0b0b10;
+      --surface: #13131d;
+      --surface-alt: #1a1a2a;
+      --border: #252540;
+      --text: #e8e8f0;
+      --text-muted: #8888a0;
+      --primary: #6c5ce7;
+      --primary-light: #8b7cf0;
+      --accent: #00cec9;
+      --gradient: linear-gradient(135deg, #6c5ce7, #00cec9);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .top-bar { height: 3px; background: var(--gradient); }
+
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(11, 11, 16, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    .nav-inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-size: 1.2rem; font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    .page-header {
+      text-align: center; padding: 60px 24px 40px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-header h1 { font-size: 2rem; font-weight: 700; }
+
+    .content-wrap {
+      max-width: 800px; margin: 0 auto; padding: 40px 24px 80px;
+    }
+
+    .content-wrap h2 {
+      font-size: 1.4rem; font-weight: 700; margin: 40px 0 16px;
+      padding-bottom: 8px; border-bottom: 2px solid var(--primary);
+    }
+
+    .content-wrap h3 { font-size: 1.1rem; margin: 28px 0 12px; }
+
+    .content-wrap p { margin-bottom: 16px; color: var(--text); }
+
+    .content-wrap ul, .content-wrap ol { margin: 0 0 16px 24px; }
+    .content-wrap li { margin-bottom: 6px; }
+
+    .content-wrap code {
+      background: var(--surface-alt); padding: 2px 6px; border-radius: 4px;
+      font-family: "SF Mono", "Fira Code", monospace; font-size: 0.9em;
+    }
+
+    .content-wrap pre {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin: 16px 0;
+      overflow-x: auto; font-size: 0.9rem; line-height: 1.6;
+    }
+
+    .content-wrap pre code {
+      background: none; padding: 0;
+    }
+
+    .content-wrap table {
+      width: 100%; border-collapse: collapse; margin: 16px 0;
+    }
+
+    .content-wrap th, .content-wrap td {
+      padding: 10px 14px; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .content-wrap th { color: var(--accent); font-weight: 600; font-size: 0.9rem; }
+
+    .content-wrap tr:nth-child(even) { background: var(--surface); }
+
+    .content-wrap blockquote {
+      border-left: 3px solid var(--primary);
+      padding: 12px 20px; margin: 16px 0;
+      background: var(--surface); border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+    }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px; text-align: center;
+      color: var(--text-muted); font-size: 0.85rem;
+    }
+
+    .footer a { color: var(--text-muted); text-decoration: none; }
+    .footer a:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .page-header h1 { font-size: 1.5rem; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar"></div>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="{{ '/' | relative_url }}" class="nav-logo">MimiLab</a>
+      <ul class="nav-links">
+        <li><a href="{{ '/' | relative_url }}">ホーム</a></li>
+        <li><a href="{{ '/user-guide' | relative_url }}">ユーザーガイド</a></li>
+        <li><a href="https://github.com/Czmirror/MimiLab">GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>{{ page.title }}</h1>
+  </div>
+
+  <div class="content-wrap">
+    {{ content }}
+  </div>
+
+  <footer class="footer">
+    <p>MimiLab &mdash; by <a href="https://github.com/Czmirror">Czmirror</a></p>
+  </footer>
+</body>
+</html>
