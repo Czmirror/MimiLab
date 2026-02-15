@@ -322,6 +322,34 @@ body {
   color: var(--text);
 }
 
+/* Practice Guide */
+.guide-section {
+  border-left: 3px solid var(--primary);
+}
+
+.practice-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guide-step h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.guide-step p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.guide-step p strong {
+  color: var(--text);
+}
+
 /* Error */
 .error {
   background: rgba(225, 112, 85, 0.1);

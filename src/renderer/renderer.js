@@ -63,6 +63,68 @@ function showResults(data) {
       chordsEl.appendChild(el);
     }
   }
+
+  // Practice guide
+  const guideEl = document.getElementById("practice-guide");
+  guideEl.innerHTML = buildPracticeGuide(data);
+}
+
+function buildPracticeGuide(data) {
+  const key = data.key;
+  const scale = data.scale;
+  const keyJa = data.keyNameJa;
+  const notes = data.scaleNotes || [];
+  const chords = data.chordsInKey || [];
+  const isMajor = scale === "major";
+
+  const tonicChord = chords[0] || key;
+  const dominantChord = chords[4] || "";
+  const subdominantChord = chords[3] || "";
+
+  const steps = [];
+
+  // Step 1: Key overview
+  steps.push({
+    title: "Step 1：キーを確認する",
+    text: `この曲は <strong>${key} ${scale}（${keyJa}）</strong> です。` +
+      `まず ${key} の音をDAWやキーボードで鳴らして、曲のルート（基準音）を耳で確認してみましょう。`,
+  });
+
+  // Step 2: Scale practice
+  if (notes.length > 0) {
+    steps.push({
+      title: "Step 2：スケールを弾いてみる",
+      text: `${keyJa}のスケール構成音は <strong>${notes.join(" - ")}</strong> です。` +
+        `この音だけを使って曲に合わせて弾くと、メロディの動きが掴みやすくなります。`,
+    });
+  }
+
+  // Step 3: Chord progression
+  if (chords.length >= 5) {
+    const progressionExample = isMajor
+      ? `${tonicChord} → ${subdominantChord} → ${dominantChord} → ${tonicChord}`
+      : `${tonicChord} → ${subdominantChord} → ${dominantChord} → ${tonicChord}`;
+    steps.push({
+      title: "Step 3：主要コードを試す",
+      text: `よく使われるコード進行の例: <strong>${progressionExample}</strong>（I-IV-V-I）。` +
+        `曲を再生しながらこの進行を弾いて、コードの変わり目を聴き取る練習をしましょう。`,
+    });
+  }
+
+  // Step 4: Ear training tips
+  steps.push({
+    title: "Step 4：メロディを耳コピする",
+    text: isMajor
+      ? `メジャーキーでは明るい響きが特徴です。サビや印象的なフレーズから始めて、スケール構成音のどれが使われているか1音ずつ探してみましょう。`
+      : `マイナーキーでは暗く切ない響きが特徴です。サビや印象的なフレーズから始めて、スケール構成音のどれが使われているか1音ずつ探してみましょう。`,
+  });
+
+  return steps
+    .map(
+      (s) =>
+        `<div class="guide-step"><h4>${s.title}</h4><p>${s.text}</p></div>`
+    )
+    .join("");
 }
 
 // Analyze from URL
