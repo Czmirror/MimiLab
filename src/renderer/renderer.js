@@ -12,8 +12,10 @@ let isAnalyzing = false;
 function setLoading(loading) {
   isAnalyzing = loading;
   loadingEl.classList.toggle("hidden", !loading);
-  resultsEl.classList.add("hidden");
-  errorEl.classList.add("hidden");
+  if (loading) {
+    resultsEl.classList.add("hidden");
+    errorEl.classList.add("hidden");
+  }
   analyzeUrlBtn.disabled = loading;
   selectFileBtn.disabled = loading;
 }
