@@ -74,13 +74,17 @@ ipcMain.handle("analyze-file", async (_event, filePath) => {
 // Handle audio analysis from URL (download then analyze)
 ipcMain.handle("analyze-url", async (_event, url) => {
   try {
+    console.log(`[MimiLab] URL解析開始: ${url}`);
     const tempPath = await downloadAudio(url);
+    console.log(`[MimiLab] ダウンロード完了: ${tempPath}`);
     const result = await analyzeAudio(tempPath);
+    console.log(`[MimiLab] 解析完了: ${result.keyName}`);
     // Clean up temp file
     const fs = require("fs");
     fs.unlink(tempPath, () => {});
     return result;
   } catch (error) {
+    console.error(`[MimiLab] URL解析エラー: ${error.message}`);
     return { error: error.message };
   }
 });
