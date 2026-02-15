@@ -9,8 +9,8 @@ let essentia = null;
 
 function getEssentia() {
   if (!essentia) {
-    // EssentiaWASM is { EssentiaWASM: Module } due to UMD nesting
-    essentia = new Essentia(EssentiaWASM.EssentiaWASM);
+    // EssentiaWASM is the emscripten Module directly (has .EssentiaJS)
+    essentia = new Essentia(EssentiaWASM);
   }
   return essentia;
 }
