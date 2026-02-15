@@ -7,10 +7,10 @@ const fs = require("fs");
 
 let essentia = null;
 
-async function getEssentia() {
+function getEssentia() {
   if (!essentia) {
-    const wasmModule = await EssentiaWASM();
-    essentia = new Essentia(wasmModule);
+    // EssentiaWASM is { EssentiaWASM: Module } due to UMD nesting
+    essentia = new Essentia(EssentiaWASM.EssentiaWASM);
   }
   return essentia;
 }
