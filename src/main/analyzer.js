@@ -1,6 +1,5 @@
 const { Essentia, EssentiaWASM } = require("essentia.js");
 const { Key, Scale } = require("tonal");
-const decode = require("audio-decode");
 const fs = require("fs");
 
 let essentia = null;
@@ -21,7 +20,8 @@ async function getEssentia() {
 async function analyzeAudio(filePath) {
   const es = await getEssentia();
 
-  // Read and decode audio file
+  // Read and decode audio file (audio-decode is ESM-only, use dynamic import)
+  const { default: decode } = await import("audio-decode");
   const buffer = fs.readFileSync(filePath);
   const audioBuffer = await decode(buffer);
 
