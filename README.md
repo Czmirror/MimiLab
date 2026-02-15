@@ -29,6 +29,22 @@ brew install yt-dlp ffmpeg
 npm start
 ```
 
+## インストール（ビルド済みアプリ）
+
+[Releases](https://github.com/Czmirror/MimiLab/releases) ページから最新版をダウンロードしてください。
+
+### macOSでの注意事項
+
+このアプリはApple Developer証明書でコード署名されていないため、初回起動時に「"MimiLab"は壊れているため開けません」と表示される場合があります。
+
+以下のコマンドをターミナルで実行してから開いてください：
+
+```bash
+xattr -cr /Applications/MimiLab.app
+```
+
+※ ダウンロード先が別の場所の場合はパスを調整してください（例: `xattr -cr ~/Downloads/MimiLab.app`）
+
 ## 技術スタック
 
 - **Electron** — デスクトップアプリフレームワーク
