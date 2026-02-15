@@ -3,33 +3,38 @@ const path = require("path");
 const os = require("os");
 const fs = require("fs");
 
+// Homebrew paths that may not be in Electron's PATH on macOS
+const BREW_PATHS = ["/opt/homebrew/bin", "/usr/local/bin"];
+
 /**
- * Find yt-dlp binary. Checks bundled path first, then system PATH.
+ * Build a PATH that includes Homebrew directories.
  */
-function findYtDlp() {
-  // Check if yt-dlp is available in system PATH
+function getEnhancedPath() {
+  const currentPath = process.env.PATH || "";
+  const missing = BREW_PATHS.filter((p) => !currentPath.includes(p));
+  return [...missing, currentPath].join(":");
+}
+
+/**
+ * Find a binary by name, checking Homebrew paths explicitly.
+ */
+function findBinary(name) {
+  for (const dir of BREW_PATHS) {
+    const fullPath = path.join(dir, name);
+    if (fs.existsSync(fullPath)) return fullPath;
+  }
+
+  // Try system PATH
   const { execFileSync } = require("child_process");
   try {
-    const result = execFileSync("which", ["yt-dlp"], { encoding: "utf8" });
+    const result = execFileSync("which", [name], {
+      encoding: "utf8",
+      env: { ...process.env, PATH: getEnhancedPath() },
+    });
     return result.trim();
   } catch {
-    // Not in PATH
+    return null;
   }
-
-  // Check common install locations on Mac
-  const commonPaths = [
-    "/usr/local/bin/yt-dlp",
-    "/opt/homebrew/bin/yt-dlp",
-    path.join(os.homedir(), ".local/bin/yt-dlp"),
-  ];
-
-  for (const p of commonPaths) {
-    if (fs.existsSync(p)) return p;
-  }
-
-  throw new Error(
-    "yt-dlp が見つかりません。インストールしてください: brew install yt-dlp"
-  );
 }
 
 /**
@@ -38,55 +43,70 @@ function findYtDlp() {
  * @returns {Promise<string>} Path to the downloaded WAV file
  */
 async function downloadAudio(url) {
-  const ytdlp = findYtDlp();
+  const ytdlp = findBinary("yt-dlp");
+  if (!ytdlp) {
+    throw new Error(
+      "yt-dlp が見つかりません。インストールしてください:\nbrew install yt-dlp"
+    );
+  }
+
   const tempDir = os.tmpdir();
-  const outputPath = path.join(
-    tempDir,
-    `mimilab_${Date.now()}.wav`
-  );
+  const baseName = `mimilab_${Date.now()}`;
+  // Use %(ext)s so yt-dlp manages the file extension correctly
+  const outputTemplate = path.join(tempDir, `${baseName}.%(ext)s`);
+  const expectedOutput = path.join(tempDir, `${baseName}.wav`);
 
   return new Promise((resolve, reject) => {
     const args = [
-      "--extract-audio",
-      "--audio-format",
-      "wav",
-      "--output",
-      outputPath,
+      "-x",
+      "--audio-format", "wav",
+      "-o", outputTemplate,
       "--no-playlist",
+      "--no-overwrites",
       url,
     ];
 
-    execFile(ytdlp, args, { timeout: 120000 }, (error, stdout, stderr) => {
+    console.log(`[MimiLab] yt-dlp: ${ytdlp}`);
+    console.log(`[MimiLab] ダウンロード開始: ${url}`);
+
+    const env = { ...process.env, PATH: getEnhancedPath() };
+
+    execFile(ytdlp, args, { timeout: 180000, env }, (error, stdout, stderr) => {
       if (error) {
+        console.error(`[MimiLab] yt-dlp エラー:\n${stderr}`);
         reject(
-          new Error(`ダウンロード失敗: ${error.message}\n${stderr}`)
+          new Error(`ダウンロード失敗: ${error.message}`)
         );
         return;
       }
 
-      // yt-dlp may add extension, find the actual output file
-      const possiblePaths = [
-        outputPath,
-        outputPath.replace(".wav", ".wav.wav"),
-      ];
+      console.log(`[MimiLab] yt-dlp 完了`);
 
-      for (const p of possiblePaths) {
-        if (fs.existsSync(p)) {
-          resolve(p);
-          return;
-        }
+      // Check expected output path first
+      if (fs.existsSync(expectedOutput)) {
+        resolve(expectedOutput);
+        return;
       }
 
-      // Try to find any recently created mimilab_ file in temp
+      // yt-dlp may have named the file differently; search for it
       const files = fs.readdirSync(tempDir);
       const match = files.find(
-        (f) => f.startsWith("mimilab_") && f.endsWith(".wav")
+        (f) => f.startsWith(baseName) && f.endsWith(".wav")
       );
       if (match) {
         resolve(path.join(tempDir, match));
         return;
       }
 
+      // Last resort: find any audio file with this baseName
+      const anyMatch = files.find((f) => f.startsWith(baseName));
+      if (anyMatch) {
+        console.log(`[MimiLab] WAVではないファイルが見つかりました: ${anyMatch}`);
+        resolve(path.join(tempDir, anyMatch));
+        return;
+      }
+
+      console.error(`[MimiLab] 出力ファイルが見つかりません。stdout:\n${stdout}`);
       reject(new Error("ダウンロードしたファイルが見つかりません"));
     });
   });
