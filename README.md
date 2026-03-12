@@ -1,6 +1,7 @@
 # MimiLab
 
 耳コピアプリ — AI音楽キー・音階検出デスクトップアプリ
+AI Music Key Detection Desktop App
 
 ## 概要
 
@@ -51,3 +52,36 @@ xattr -cr /Applications/MimiLab.app
 - **Essentia.js** — 音声解析（キー検出、BPM検出）
 - **Tonal.js** — 音楽理論（スケール、コード）
 - **yt-dlp / ffmpeg** — URL音声ダウンロード・変換
+
+## Architecture
+
+This application is structured as a desktop analysis tool built with Electron.
+
+Audio processing pipeline:
+
+1. Input source
+   - YouTube URL
+   - Local audio files
+
+2. Audio extraction
+   - yt-dlp
+   - ffmpeg
+
+3. Feature analysis
+   - Essentia.js for key detection and BPM analysis
+
+4. Music theory processing
+   - Tonal.js for scale and chord generation
+
+5. UI layer
+   - Electron desktop interface
+
+This architecture separates audio analysis, music theory processing, and UI rendering to allow future expansion of analysis features.
+
+## Development Background
+
+MimiLab was created as an experimental project exploring AI-assisted development workflows.
+
+The goal was to prototype a practical audio analysis tool while validating how AI coding tools can accelerate development from design specification to implementation.
+
+The project focuses on rapid prototyping, feature validation, and iterative development using AI-assisted coding techniques.
